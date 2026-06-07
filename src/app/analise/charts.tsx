@@ -144,12 +144,74 @@ export default function AnaliseCharts({ games }: { games: GameEntry[] }) {
     },
   };
 
+  const top3Threats = commanderData.slice(0, 3);
+  const threatColors = ["#ef4444", "#f97316", "#f59e0b"];
+  const threatLabels = [
+    "Maior Ameaca",
+    "2a Ameaca",
+    "3a Ameaca",
+  ];
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold text-accent mb-2">Analise</h1>
         <p className="text-muted">Graficos e estatisticas das partidas</p>
       </div>
+
+      {/* Top 3 Ameacas da Mesa */}
+      <section className="bg-card rounded-lg border-2 border-danger/40 p-6 mb-8">
+        <h2 className="text-2xl font-bold text-danger mb-6 text-center">
+          Top 3 Ameacas da Mesa
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+          {top3Threats.map((c, i) => (
+            <div
+              key={c.name}
+              className="rounded-lg p-5 text-center"
+              style={{
+                background: `${threatColors[i]}15`,
+                border: `1px solid ${threatColors[i]}40`,
+              }}
+            >
+              <div className="text-3xl mb-2">
+                {i === 0 ? "\u{1F525}" : i === 1 ? "\u{26A0}️" : "\u{1F4A2}"}
+              </div>
+              <div
+                className="text-xs font-semibold uppercase tracking-wider mb-1"
+                style={{ color: threatColors[i] }}
+              >
+                {threatLabels[i]}
+              </div>
+              <div className="text-xl font-bold text-foreground mb-1">
+                {c.name}
+              </div>
+              <div
+                className="text-3xl font-bold mb-1"
+                style={{ color: threatColors[i] }}
+              >
+                {c.pontos} pts
+              </div>
+              <div className="text-sm text-muted">
+                {c.partidas} partidas &middot; {c.media} pts/partida
+              </div>
+            </div>
+          ))}
+        </div>
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart data={top3Threats} barSize={60}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#2a2a4a" />
+            <XAxis dataKey="name" stroke="#94a3b8" fontSize={13} />
+            <YAxis stroke="#94a3b8" fontSize={12} />
+            <Tooltip {...tooltipStyle} />
+            <Bar dataKey="pontos" radius={[6, 6, 0, 0]}>
+              {top3Threats.map((_, i) => (
+                <Cell key={i} fill={threatColors[i]} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Pontos por Piloto */}
